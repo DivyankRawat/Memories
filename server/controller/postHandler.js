@@ -1,5 +1,25 @@
 // Holds all the logic that is going to be used in routes
 
-export const getPosts = (req, res) => {
-    res.send("This Works");
+import PostMessage from '../models/postMessage.js'
+
+export const getPosts = async (req, res) => {
+    try {
+        const postMessages = await PostMessage.find();
+        res.status(200).json(postMessages);
+    } catch (error) {
+        res.status(404).json({ message: error.message });
+    }
+}
+
+export const createPost = async (req, res) => {
+    // taking the data from the frontend and passing that in PostMessage for storage and display..
+    const post = req.body;
+    const newPost = new PostMessage(post);
+
+    try {
+        await newPost.save();
+        res.status(201).json(newPost);
+    } catch (error) {
+        res.status(409).json({ message: error.message })
+    }
 }
